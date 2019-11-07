@@ -383,6 +383,11 @@ ORK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly) BOOL hasBeenPresented;
 
+/**
+A Boolean value indicating whether the view controller should ignore iPad design
+*/
+@property (nonatomic, assign) BOOL shouldIgnoreiPadDesign;
+
 @end
 
 NS_ASSUME_NONNULL_END
