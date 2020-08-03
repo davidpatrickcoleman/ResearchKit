@@ -28,39 +28,55 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <ResearchKit/ORKTypes.h>
-#import "ORKNavigationContainerView.h"
-#import "ORKContinueButton.h"
-#import "ORKBorderedButton.h"
-#import "ORKFootnoteTextView.h"
+
+#import "ORKTextView.h"
+
+#import "ORKHelpers_Internal.h"
 
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation ORKTextView
 
-@interface ORKNavigationContainerBorderedButton: ORKBorderedButton
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self init_ORKTextView];
+    }
+    return self;
+}
 
-- (void)setAppearanceAsTextButton;
-- (void)setAppearanceAsBoldTextButton;
-- (void)resetAppearanceAsBorderedButton;
+- (instancetype)init_ORKTextView:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self init_ORKTextView];
+    }
+    return self;
+}
+
+- (void)init_ORKTextView {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateAppearance)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    [self updateAppearance];
+}
+
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    [self updateAppearance];
+}
+
+- (void)updateAppearance {
+    self.font = [[self class] defaultFont];
+    [self invalidateIntrinsicContentSize];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
++ (UIFont *)defaultFont {
+    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleSubheadline];
+    return ORKMediumFontWithSize(((NSNumber *)[descriptor objectForKey: UIFontDescriptorSizeAttribute]).doubleValue + 3.0);
+}
 
 @end
-
-
-@interface ORKNavigationContainerView ()
-
-@property (nonatomic, strong, readonly) ORKContinueButton *continueButton;
-@property (nonatomic, strong, readonly) ORKNavigationContainerBorderedButton *skipButton;
-@property (nonatomic, strong, readonly) ORKFootnoteTextView *footnoteLabel;
-@property (nonatomic, strong, readonly) ORKNavigationContainerBorderedButton *cancelButton;
-
-@property (nonatomic) BOOL useNextForSkip;
-@property (nonatomic, getter=isOptional) BOOL optional;
-
-@property (nonatomic) ORKNavigationContainerButtonStyle skipButtonStyle;
-@property (nonatomic) ORKNavigationContainerButtonStyle cancelButtonStyle;
-
-- (void)updateContinueAndSkipEnabled;
-
-@end
-
-NS_ASSUME_NONNULL_END

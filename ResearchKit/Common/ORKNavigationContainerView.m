@@ -241,10 +241,14 @@ static const CGFloat shadowHeight = 0.75;
 }
 
 - (void)setupFootnoteLabel {
-    _footnoteLabel = [ORKFootnoteLabel new];
-    _footnoteLabel.numberOfLines = 0;
+    _footnoteLabel = [[ORKFootnoteTextView alloc] init];
+    _footnoteLabel.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     _footnoteLabel.textAlignment = NSTextAlignmentNatural;
+    _footnoteLabel.scrollEnabled = NO;
     _footnoteLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _footnoteLabel.editable = NO;
+    _footnoteLabel.dataDetectorTypes = UIDataDetectorTypeLink;
+    _footnoteLabel.backgroundColor = [UIColor colorWithRed:249.0 / 255.0 green:249.0 / 255.0 blue:251.0 / 255.0 alpha:0.0];
     [self addSubview:_footnoteLabel];
 }
 
