@@ -301,7 +301,6 @@
 }
 
 - (instancetype)ORKFormStepViewController_initWithResult:(ORKResult *)result {
-    _defaultSource = [ORKAnswerDefaultSource sourceWithHealthStore:[HKHealthStore new]];
     if (result) {
         NSAssert([result isKindOfClass:[ORKStepResult class]], @"Expect a ORKStepResult instance");
 
@@ -335,31 +334,8 @@
     [super viewWillAppear:animated];
     
     [self.taskViewController setRegisteredScrollView:_tableView];
-    
-    NSMutableSet *types = [NSMutableSet set];
-    for (ORKFormItem *item in [self formItems]) {
-        ORKAnswerFormat *format = [item answerFormat];
-        HKObjectType *objType = [format healthKitObjectTypeForAuthorization];
-        if (objType) {
-            [types addObject:objType];
-        }
-    }
-    
+     
     BOOL refreshDefaultsPending = NO;
-    if (types.count) {
-        NSSet<HKObjectType *> *alreadyRequested = [[self taskViewController] requestedHealthTypesForRead];
-        if (![types isSubsetOfSet:alreadyRequested]) {
-            refreshDefaultsPending = YES;
-            [_defaultSource.healthStore requestAuthorizationToShareTypes:nil readTypes:types completion:^(BOOL success, NSError *error) {
-                if (!success) {
-                    ORK_Log_Debug(@"Authorization: %@",error);
-                }
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self refreshDefaults];
-                });
-            }];
-        }
-    }
     if (!refreshDefaultsPending) {
         [self refreshDefaults];
     }

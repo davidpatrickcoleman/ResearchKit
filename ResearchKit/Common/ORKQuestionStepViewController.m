@@ -133,9 +133,6 @@ typedef NS_ENUM(NSInteger, ORKQuestionSection) {
 
 - (instancetype)initWithStep:(ORKStep *)step {
     self = [super initWithStep:step];
-    if (self) {
-        _defaultSource = [ORKAnswerDefaultSource sourceWithHealthStore:[HKHealthStore new]];
-    }
     return self;
 }
 
@@ -380,25 +377,8 @@ typedef NS_ENUM(NSInteger, ORKQuestionSection) {
     
     NSMutableSet *types = [NSMutableSet set];
     ORKAnswerFormat *format = [[self questionStep] answerFormat];
-    HKObjectType *objType = [format healthKitObjectTypeForAuthorization];
-    if (objType) {
-        [types addObject:objType];
-    }
     
     BOOL scheduledRefresh = NO;
-    if (types.count) {
-        NSSet<HKObjectType *> *alreadyRequested = [[self taskViewController] requestedHealthTypesForRead];
-        if (![types isSubsetOfSet:alreadyRequested]) {
-            scheduledRefresh = YES;
-            [_defaultSource.healthStore requestAuthorizationToShareTypes:nil readTypes:types completion:^(BOOL success, NSError *error) {
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self refreshDefaults];
-                    });
-                }
-            }];
-        }
-    }
     if (!scheduledRefresh) {
         [self refreshDefaults];
     }

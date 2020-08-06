@@ -30,7 +30,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import <HealthKit/HealthKit.h>
 #import <ResearchKit/ORKErrors.h>
 #import <ResearchKit/ORKDefines.h>
 
@@ -89,25 +88,6 @@ ORK_CLASS_AVAILABLE
 ORK_CLASS_AVAILABLE
 @interface ORKHealthCollector : ORKCollector
 
-/**
- HealthKit sample type.
- */
-@property (copy, readonly) HKSampleType *sampleType;
-
-/**
- HealthKit unit into which data should be collected.
- */
-@property (copy, readonly) HKUnit *unit;
-
-/**
- Samples should be collected starting at this date.
- */
-@property (copy, readonly) NSDate *startDate;
-
-/**
- Last anchor already seen.
- */
-@property (copy, readonly) HKQueryAnchor *lastAnchor;
 
 @end
 
@@ -122,29 +102,10 @@ ORK_CLASS_AVAILABLE
 @interface ORKHealthCorrelationCollector : ORKCollector
 
 /**
- HealthKit correlation type.
- */
-@property (copy, readonly) HKCorrelationType *correlationType;
-
-/**
- Array of HKSampleType expected in the correlation.
- */
-@property (copy, readonly) NSArray<HKSampleType *> *sampleTypes;
-
-/**
- Array of HKUnit to use when serializing the samples collected (should be same size as sampleTypes).
- */
-@property (copy, readonly) NSArray<HKUnit *> *units;
-
-/**
  Samples should be collected starting at this date.
  */
 @property (copy, readonly) NSDate *startDate;
 
-/**
- Last anchor already seen.
- */
-@property (copy, readonly) HKQueryAnchor *lastAnchor;
 
 @end
 

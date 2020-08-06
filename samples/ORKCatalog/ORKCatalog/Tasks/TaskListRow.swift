@@ -849,14 +849,9 @@ enum TaskListRow: Int, CustomStringConvertible {
         let step3 = ORKQuestionStep(identifier: String(describing:Identifier.heightQuestionStep3), title: NSLocalizedString("Height", comment: ""), question: exampleQuestionText, answer: answerFormat3)
         
         step3.text = "USC system"
-
-        let answerFormat4 = ORKHealthKitQuantityTypeAnswerFormat(quantityType: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.height)!, unit: HKUnit.meterUnit(with: .centi), style: .decimal)
         
-        let step4 = ORKQuestionStep(identifier: String(describing:Identifier.heightQuestionStep4), title: NSLocalizedString("Height", comment: ""), question: exampleQuestionText, answer: answerFormat4)
         
-        step4.text = "HealthKit, height"
-        
-        return ORKOrderedTask(identifier: String(describing:Identifier.heightQuestionTask), steps: [step1, step2, step3, step4])
+        return ORKOrderedTask(identifier: String(describing:Identifier.heightQuestionTask), steps: [step1, step2, step3])
     }
 
     /// This task demonstrates a question asking for the user weight.
@@ -897,13 +892,7 @@ enum TaskListRow: Int, CustomStringConvertible {
         
         step6.text = "USC system, high precision"
 
-        let answerFormat7 = ORKHealthKitQuantityTypeAnswerFormat(quantityType: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!, unit: HKUnit.gramUnit(with: .kilo), style: .decimal)
-        
-        let step7 = ORKQuestionStep(identifier: String(describing:Identifier.weightQuestionStep7), title: NSLocalizedString("Weight", comment: ""), question: exampleQuestionText, answer: answerFormat7)
-        
-        step7.text = "HealthKit, body mass"
-
-        return ORKOrderedTask(identifier: String(describing:Identifier.weightQuestionTask), steps: [step1, step2, step3, step4, step5, step6, step7])
+        return ORKOrderedTask(identifier: String(describing:Identifier.weightQuestionTask), steps: [step1, step2, step3, step4, step5, step6])
     }
     
     /**
