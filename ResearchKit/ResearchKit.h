@@ -72,7 +72,6 @@
 #import <ResearchKit/ORKStepNavigationRule.h>
 
 #import <ResearchKit/ORKAnswerFormat.h>
-#import <ResearchKit/ORKHealthAnswerFormat.h>
 
 #import <ResearchKit/ORKResult.h>
 #import <ResearchKit/ORKActiveTaskResult.h>
