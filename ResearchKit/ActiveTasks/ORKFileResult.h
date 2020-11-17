@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  completes, it may be appropriate to serialize the linked file for transmission
  to the server.
  
- Active steps typically produce file results when CoreMotion or HealthKit are
+ Active steps typically produce file results when CoreMotion  are
  serialized to disk using a data logger (`ORKDataLogger`). Audio recording also produces a file
  result.
  

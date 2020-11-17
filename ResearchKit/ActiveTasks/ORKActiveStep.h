@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The `ORKActiveStep` class is the base class for steps in active tasks, which
  are steps that collect sensor data in a semi-controlled environment, as opposed
- to the purely passive data collection enabled by HealthKit, or the more subjective data
+ to the purely passive data collection enabled by the more subjective data
  collected when users fill in surveys.
  
  In addition to the behaviors of `ORKStep`, active steps have the concept of
@@ -199,7 +199,7 @@ The default value of this property is `NO`.
  of the step result.
  
  The set of recorder configurations is scanned when populating the
- `requestedHealthKitTypesForReading` and `requestedPermissions` properties.
+`requestedPermissions` properties.
  
  See also: `ORKRecorderConfiguration` and `ORKRecorder`.
  */
