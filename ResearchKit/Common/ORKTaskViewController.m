@@ -140,8 +140,7 @@ typedef void (^_ORKLocationAuthorizationRequestHandler)(BOOL success);
     BOOL _hasRequestedHealthData;
     BOOL _saveable;
     ORKPermissionMask _grantedPermissions;
-    NSSet<HKObjectType *> *_requestedHealthTypesForRead;
-    NSSet<HKObjectType *> *_requestedHealthTypesForWrite;
+
     NSURL *_outputDirectory;
     
     NSDate *_presentedDate;
@@ -324,29 +323,6 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
     return [[UIBarButtonItem alloc] initWithTitle:ORKLocalizedString(@"BUTTON_LEARN_MORE", nil) style:UIBarButtonItemStylePlain target:self action:@selector(learnMoreAction:)];
 }
 
-- (void)requestHealthStoreAccessWithReadTypes:(NSSet *)readTypes
-                                   writeTypes:(NSSet *)writeTypes
-                                      handler:(void (^)(void))handler {
-    NSParameterAssert(handler != nil);
-    if ((![HKHealthStore isHealthDataAvailable]) || (!readTypes && !writeTypes)) {
-        _requestedHealthTypesForRead = nil;
-        _requestedHealthTypesForWrite = nil;
-        handler();
-        return;
-    }
-    
-    _requestedHealthTypesForRead = readTypes;
-    _requestedHealthTypesForWrite = writeTypes;
-    
-    __block HKHealthStore *healthStore = [HKHealthStore new];
-    [healthStore requestAuthorizationToShareTypes:writeTypes readTypes:readTypes completion:^(BOOL success, NSError *error) {
-        ORK_Log_Error("Health access: error=%@", error);
-        dispatch_async(dispatch_get_main_queue(), handler);
-        
-        // Clear self-ref.
-        healthStore = nil;
-    }];
-}
 
 - (void)requestPedometerAccessWithHandler:(void (^)(BOOL success))handler {
     NSParameterAssert(handler != nil);
@@ -431,30 +407,11 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
         return;
     }
     
-    NSSet *readTypes = nil;
-    if ([self.task respondsToSelector:@selector(requestedHealthKitTypesForReading)]) {
-        readTypes = [self.task requestedHealthKitTypesForReading];
-    }
-    
-    NSSet *writeTypes = nil;
-    if ([self.task respondsToSelector:@selector(requestedHealthKitTypesForWriting)]) {
-        writeTypes = [self.task requestedHealthKitTypesForWriting];
-    }
-    
     ORKPermissionMask permissions = [self desiredPermissions];
     
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            ORK_Log_Debug("Requesting health access");
-            [self requestHealthStoreAccessWithReadTypes:readTypes
-                                             writeTypes:writeTypes
-                                                handler:^{
-                                                    dispatch_semaphore_signal(semaphore);
-                                                }];
-        });
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         if (permissions & ORKPermissionCoreMotionAccelerometer) {
             _grantedPermissions |= ORKPermissionCoreMotionAccelerometer;
         }
@@ -581,14 +538,6 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
             ORK_Log_Debug("*** Finished audio session");
         }
     }
-}
-
-- (NSSet<HKObjectType *> *)requestedHealthTypesForRead {
-    return _requestedHealthTypesForRead;
-}
-
-- (NSSet<HKObjectType *> *)requestedHealthTypesForWrite {
-    return _requestedHealthTypesForWrite;
 }
 
 - (void)loadView {
@@ -1484,8 +1433,6 @@ static NSString *const _ORKProgressMode = @"progressMode";
     [coder encodeBool:self.discardable forKey:_ORKDiscardableTaskRestoreKey];
     [coder encodeObject:_managedResults forKey:_ORKManagedResultsRestoreKey];
     [coder encodeObject:_managedStepIdentifiers forKey:_ORKManagedStepIdentifiersRestoreKey];
-    [coder encodeObject:_requestedHealthTypesForRead forKey:_ORKRequestedHealthTypesForReadRestoreKey];
-    [coder encodeObject:_requestedHealthTypesForWrite forKey:_ORKRequestedHealthTypesForWriteRestoreKey];
     [coder encodeObject:_presentedDate forKey:_ORKPresentedDate];
     [coder encodeInteger:_progressMode forKey:_ORKProgressMode];
     [coder encodeObject:ORKBookmarkDataFromURL(_outputDirectory) forKey:_ORKOutputDirectoryRestoreKey];
@@ -1529,8 +1476,6 @@ static NSString *const _ORKProgressMode = @"progressMode";
         }
         
         if ([_task respondsToSelector:@selector(stepWithIdentifier:)]) {
-            _requestedHealthTypesForRead = [coder decodeObjectOfClass:[NSSet class] forKey:_ORKRequestedHealthTypesForReadRestoreKey];
-            _requestedHealthTypesForWrite = [coder decodeObjectOfClass:[NSSet class] forKey:_ORKRequestedHealthTypesForWriteRestoreKey];
             _presentedDate = [coder decodeObjectOfClass:[NSDate class] forKey:_ORKPresentedDate];
             _lastBeginningInstructionStepIdentifier = [coder decodeObjectOfClass:[NSString class] forKey:_ORKLastBeginningInstructionStepIdentifierKey];
             

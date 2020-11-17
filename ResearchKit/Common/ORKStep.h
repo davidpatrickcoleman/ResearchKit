@@ -31,7 +31,6 @@
 
 @import Foundation;
 @import UIKit;
-@import HealthKit;
 #import <ResearchKit/ORKTypes.h>
 
 
