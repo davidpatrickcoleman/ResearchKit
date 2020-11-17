@@ -74,8 +74,6 @@
     XCTAssert([step.identifier isEqualToString:@"STEP"]);
     XCTAssert([step isEqual:step]);
     XCTAssertFalse([step isEqual:@"TEST"]);
-    XCTAssertEqual([step requestedPermissions], ORKPermissionNone);
-    XCTAssertEqualObjects([step requestedHealthKitTypesForReading], nil);
 }
 
 - (void)testCopyWithIdentifier {
@@ -405,7 +403,6 @@
     XCTAssertEqual([step useCardView], NO);
     XCTAssertEqual([step isOptional], NO);
     XCTAssertNoThrowSpecificNamed([step validateParameters], NSException, NSInvalidArgumentException, @"Should not throw exception");
-    XCTAssertEqual([step requestedHealthKitTypesForReading], nil);
     XCTAssertEqual([step stepViewControllerClass], [ORKQuestionStepViewController class], @"Should return ORKQuestionStepViewController");
     XCTAssert([step isEqual:step]);
     XCTAssertEqual([step questionType], ORKQuestionTypeText, @"Should return ORKQuestionTypeText");

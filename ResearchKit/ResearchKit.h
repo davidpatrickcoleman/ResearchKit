@@ -145,6 +145,4 @@
 #import <ResearchKit/ORK3DModelManager.h>
 #import <ResearchKit/ORKUSDZModelManager.h>
 #import <ResearchKit/ORKPermissionType.h>
-#import <ResearchKit/ORKHealthKitPermissionType.h>
-
 #import <ResearchKit/ORKDeprecated.h>
